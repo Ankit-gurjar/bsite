@@ -12,6 +12,8 @@ import Cookies from "js-cookie";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
   const [inputValue, setInputValue] = useState({
     email: "",
     password: "",
@@ -45,9 +47,15 @@ const Login = () => {
       const { data } = response;
       if (data.success) {
         // Save the token using js-cookie
-        Cookies.set("token", data.token, { expires: 7, secure: true, sameSite: 'None', httpOnly:false }); // Save for 7 days
+        Cookies.set("token", data.token, {
+          expires: 7,
+          secure: true,
+          sameSite: "None",
+          httpOnly: false,
+        }); // Save for 7 days
 
-
+        // setUser(data);
+        // localStorage.setItem("userInfo", JSON.stringify(data));
         handleSuccess(data.message);
         setTimeout(() => {
           navigate("/profile");

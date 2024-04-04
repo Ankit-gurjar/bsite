@@ -8,7 +8,7 @@ import Profile from "./pages/Profile";
 import BlogPost from "./pages/BlogPost"; // Import your BlogPost component
 import CreateBlog from "./pages/CreateBlog";
 import BlogFeed from "./pages/BlogFeed"; // Update the import path according to your project structure
-import { HashRouterRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (

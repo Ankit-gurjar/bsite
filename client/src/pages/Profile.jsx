@@ -8,56 +8,55 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 
-
-
-
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [showReload, setShowReload] = useState(false);
 
-    const [cookies, removeCookie] = useCookies(["token"]);
-    const navigate = useNavigate();
+  const [cookies, removeCookie] = useCookies(["token"]);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const verifyCookie = async (req, res) => {
+      console.log("profile page visited");
+      console.log(cookies.token);
+      if (!cookies.token) {
+        console.log("cookies not found");
+        navigate("/login");
+      } else {
+        try {
+          console.log("fetching profile");
+          axios.defaults.withXSRFToken = true;
+          axios.defaults.withCredentials = true;
+          res.setHeader("Access-Control-Allow-Credentials", true);
 
-    useEffect(() => {
-      const verifyCookie = async () => {
-        console.log(cookies.token)
-        if (!cookies.token) {
-          console.log("cookies not found")
-          navigate("/login");
-        } else {
-          try {
-            console.log("fetching profile")
-            axios.defaults.withXSRFToken = true
-            axios.defaults.withCredentials = true
-            res.setHeader('Access-Control-Allow-Credentials',true);
-
-
-
-            const { data } = await axios.get(`${import.meta.env.VITE_APP_BACKEND}/profile`, {
+          const { data } = await axios.get(
+            `${import.meta.env.VITE_APP_BACKEND}/profile`,
+            {
               withCredentials: true,
               headers: {
-                  'Access-Control-Allow-Origin': '*', 
-                  'Content-Type': 'application/json'
-              }
-            });
-            if (data.user) {
-              setUser(data.user);
-              console.log("set user properties in user")
-            } else {
-              console.log("data not fetched and removed cookie")
-              // removeCookie("token");
-              navigate("/login");
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${cookies.token}`,
+              },
             }
-          } catch (error) {
-            console.error("Verification failed", error);
-            // removeCookie("token", { path: "/" });
+          );
+          if (data.user) {
+            setUser(data.user);
+            console.log("set user properties in user");
+          } else {
+            console.log("data not fetched and removed cookie");
+            // removeCookie("token");
             navigate("/login");
           }
+        } catch (error) {
+          console.error("Verification failed", error);
+          // removeCookie("token", { path: "/" });
+          navigate("/login");
         }
-      };
-      verifyCookie();
-    });
+      }
+    };
+    verifyCookie();
+  });
 
   const reloadAvatar = async () => {
     try {
@@ -72,7 +71,7 @@ const Profile = () => {
         ...prevUser,
         avatar: data.avatar,
       }));
-      window.location.reload(); 
+      window.location.reload();
     } catch (error) {
       console.error("Error updating avatar:", error);
     }
