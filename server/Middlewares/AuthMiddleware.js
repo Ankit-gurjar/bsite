@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 
 module.exports.userVerification = (req, res, next) => {
   const token = req.cookies.token;
+  console.log(req);
   console.log("hii verification", token);
   if (!token) {
     return res

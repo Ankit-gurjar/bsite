@@ -55,7 +55,7 @@ const Profile = () => {
         }
       }
     };
-    verifyCookie();
+    verifyCookie(cookies.token);
   });
 
   const reloadAvatar = async () => {
